@@ -1,0 +1,34 @@
+﻿@model IEnumerable<ST10150702_PROG6212_POE.Models.Lecturer>
+
+    <h2> Lecturer List</h2>
+
+    <table class="table">
+        <thread>
+            <tr>
+                <th>LectID</th>
+                <th>LecName</th>
+                <th>LecSurname</th>
+                <th>HourlyRate</th>
+                <th>UserName</th>
+                <th>Password</th>
+                <th>Claims</th>
+            </tr>
+        </thread>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.LectID</td>
+                <td>@item.LecName</td>
+                <td>@item.LecSurname</td>
+                <td>@item.HourlyRate</td>
+                <td>@item.UserName</td>
+                <td>@item.Password</td>
+                <td>@item.Claims</td>
+                <td>
+                    <a asp-action="Delete" asp-route-id="@item.LectID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+    </table>
