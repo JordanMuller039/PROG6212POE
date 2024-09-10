@@ -1,5 +1,350 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<ST10150702_PROG6212_POE.Models.Claim>
+
 @{
+    ViewData["Title"] = "Create Claim";
 }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <title>Create Claim</title>
+    <style>
+        /* Ensure both html and body take up the full height and use flexbox for centering */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative; /* Position relative to establish a stacking context */
+            overflow: hidden; /* Prevent scrolling on the overlay */
+        }
+
+            /* Transparent overlay spanning the entire page */
+            body::before {
+                content: '';
+                position: fixed; /* Use fixed to ensure it covers the entire page */
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(255, 255, 255, 0.6); /* Transparent white layer */
+                z-index: -1; /* Ensure it is below the container */
+            }
+
+        /* Main body background */
+        body {
+            background-image: url('@Url.Content("~/Pictures/lecturebackground.jpg")');
+            background-size: 350px;
+            background-repeat: repeat;
+            background-position: center;
+        }
+
+        /* Centered main block */
+        .claim-container {
+            background-color: white;
+            min-height: 300px;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 1200px; /* Increased width */
+            z-index: 1; /* Ensure it is above the overlay */
+            display: flex;
+            flex-direction: row; /* Align items in a row */
+            align-items: flex-start; /* Align items at the start */
+            gap: 2rem; /* Add spacing between the form and table */
+        }
+
+        .container-content {
+            flex: 1; /* Allow this to take up available space */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Align inputs to the start of the container */
+        }
+
+        .logo {
+            width: 35px; /* Adjusted size */
+            height: auto;
+            margin-left: auto; /* Push logo to the right */
+        }
+
+        h1 {
+            color: #333;
+            font-weight: bold;
+            font-size: 24px;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            width: 100%;
+        }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 0.5rem;
+            }
+
+            .form-group input, .form-group textarea, .form-group select {
+                width: 100%;
+                padding: 0.5rem;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+            }
+
+            .form-group textarea {
+                resize: vertical;
+                min-height: 100px;
+            }
+
+        .submit-button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+
+        /* Table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 0.5rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        /* Pop-up notification */
+        .login-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            z-index: 999;
+            width: 300px;
+            text-align: center;
+        }
+
+        .calendar-container {
+            flex-shrink: 0; /* Prevent the calendar from shrinking */
+            width: 300px; /* Adjust width as needed */
+        }
+
+        .calendar {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        .calendar-nav {
+            cursor: pointer;
+        }
+
+        .calendar-month {
+            flex: 1;
+            text-align: center;
+        }
+
+        .calendar-days,
+        .calendar-dates {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            border-top: 1px solid #ddd;
+        }
+
+        .calendar-day,
+        .calendar-date {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+
+        .calendar-day {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        .calendar-date {
+            cursor: pointer;
+        }
+
+            .calendar-date:hover {
+                background-color: #e0e0e0;
+            }
+
+            .calendar-date.current {
+                background-color: #007BFF;
+                color: white;
+                border-radius: 50%;
+            }
+    </style>
+</head>
+<body>
+    <div class="claim-container">
+        <div class="container-content">
+            <h1>Create Claim</h1>
+            <div class="form-group">
+                <label for="lecturerId">Lecturer ID</label>
+                <input type="text" id="lecturerId" name="lecturerId" required>
+            </div>
+            <div class="form-group">
+                <label for="hoursWorked">Total Hours Worked</label>
+                <input type="number" id="hoursWorked" name="hoursWorked" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="amountDue">Amount Due</label>
+                <input type="number" id="amountDue" name="amountDue" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="moduleCode">Module Code</label>
+                <select id="moduleCode" name="moduleCode" required>
+                    <option value="PROG6111">PROG6111</option>
+                    <option value="PROG6222">PROG6222</option>
+                    <option value="CLDV6212">CLDV6212</option>
+                    <option value="ADDB7311">ADDB7311</option>
+                    <option value="CLDV5111">CLDV5111</option>
+                    <option value="MPFD5622">MPFD5622</option>
+                    <option value="SOEN6212">SOEN6212</option>
+                    <option value="HETC7331">HETC7331</option>
+                    <option value="FDAB6221">FDAB6221</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="supportingImages">Supporting Images</label>
+                <input type="file" id="supportingImages" name="supportingImages" multiple>
+            </div>
+            <button type="submit" class="submit-button">Submit</button>
+        </div>
+        <div class="calendar-container">
+            <div class="calendar">
+                <div class="calendar-header">
+                    <span class="calendar-nav calendar-prev">&#9664;</span>
+                    <span class="calendar-month">September 2024</span>
+                    <span class="calendar-nav calendar-next">&#9654;</span>
+                </div>
+                <div class="calendar-days">
+                    <div class="calendar-day">Sun</div>
+                    <div class="calendar-day">Mon</div>
+                    <div class="calendar-day">Tue</div>
+                    <div class="calendar-day">Wed</div>
+                    <div class="calendar-day">Thu</div>
+                    <div class="calendar-day">Fri</div>
+                    <div class="calendar-day">Sat</div>
+                    <!-- Days of the month -->
+                    <!-- Example for a month with 30 days, adjust as needed -->
+                    <div class="calendar-date"></div>
+                    <div class="calendar-date"></div>
+                    <div class="calendar-date">1</div>
+                    <div class="calendar-date">2</div>
+                    <div class="calendar-date">3</div>
+                    <div class="calendar-date">4</div>
+                    <div class="calendar-date">5</div>
+                    <div class="calendar-date">6</div>
+                    <div class="calendar-date">7</div>
+                    <div class="calendar-date">8</div>
+                    <div class="calendar-date">9</div>
+                    <div class="calendar-date">10</div>
+                    <div class="calendar-date">11</div>
+                    <div class="calendar-date">12</div>
+                    <div class="calendar-date">13</div>
+                    <div class="calendar-date">14</div>
+                    <div class="calendar-date">15</div>
+                    <div class="calendar-date">16</div>
+                    <div class="calendar-date">17</div>
+                    <div class="calendar-date">18</div>
+                    <div class="calendar-date">19</div>
+                    <div class="calendar-date">20</div>
+                    <div class="calendar-date">21</div>
+                    <div class="calendar-date">22</div>
+                    <div class="calendar-date">23</div>
+                    <div class="calendar-date">24</div>
+                    <div class="calendar-date">25</div>
+                    <div class="calendar-date">26</div>
+                    <div class="calendar-date">27</div>
+                    <div class="calendar-date">28</div>
+                    <div class="calendar-date">29</div>
+                    <div class="calendar-date">30</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="login-notification" id="loginNotification">
+        <strong>Login Successful!</strong> You are now on the CreateClaim page.
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var notification = document.getElementById("loginNotification");
+            notification.style.opacity = 1;
+            setTimeout(function () {
+                notification.style.opacity = 0;
+            }, 3000);
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const today = new Date();
+            const currentMonth = today.getMonth(); // Current month (0-11)
+            const currentYear = today.getFullYear(); // Current year
+            const currentDate = today.getDate(); // Current day of the month
+
+            // Update calendar header
+            document.querySelector(".calendar-month").textContent = `${today.toLocaleString('default', { month: 'long' })} ${currentYear}`;
+
+            // Highlight current date
+            document.querySelectorAll(".calendar-date").forEach(dateElem => {
+                if (dateElem.textContent == currentDate) {
+                    dateElem.classList.add("current");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

@@ -27,6 +27,21 @@ namespace ST10150702_PROG6212_POE.Controllers
         public IActionResult CreateLogin()
             { return View(); }
 
+
+        [HttpPost]
+        public IActionResult CreateClaim(string username, string password)
+        {
+            // Validate the username and password
+            // If valid, return the CreateClaim view
+            return View("CreateClaim");
+        }
+
+        public IActionResult CreateClaim()
+        {
+            var claims = _context.Claims.ToList(); // or however you're getting your claims
+            return View(claims); // Pass the list of claims to the view
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create(Lecturer lecturer)
         {

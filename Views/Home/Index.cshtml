@@ -1,7 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,7 +17,7 @@
             justify-content: center;
             align-items: center;
             background-image: url('Pictures/lecturebackground.jpg');
-            background-size: 350px; /* Adjust this value to make the image smaller or larger */
+            background-size: 350px;
             background-repeat: repeat;
         }
 
@@ -29,7 +28,7 @@
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background-color: rgba(255, 255, 255, 0.6); /* 90% white overlay for 10% opacity effect */
+                background-color: rgba(255, 255, 255, 0.6);
                 z-index: 0;
             }
 
@@ -37,7 +36,7 @@
             background-color: white;
             padding: 2.65rem;
             border-radius: 5px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); /* Enhanced drop shadow */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
             width: 397px;
             position: relative;
             z-index: 1;
@@ -55,8 +54,8 @@
         }
 
             h1 img {
-                margin-right: 30px; /* Adds space between the image and text */
-                height: 60px; /* Adjust the size of the logo as needed */
+                margin-right: 30px;
+                height: 60px;
                 width: auto;
             }
 
@@ -109,9 +108,9 @@
         <h1>
             <img src="Pictures/VClogo.png" alt=""> Lecturer Login
         </h1>
-        <form>
-            <input type="text" placeholder="Username" required>
-            <input type="password" placeholder="Password" required>
+        <form method="post" asp-controller="Lecturer" asp-action="CreateClaim">
+            <input type="text" placeholder="Username" name="username" required>
+            <input type="password" placeholder="Password" name="password" required>
             <button type="submit">Login!</button>
         </form>
         <div class="signup-link">
