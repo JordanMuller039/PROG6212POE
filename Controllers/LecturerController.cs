@@ -27,6 +27,16 @@ namespace ST10150702_PROG6212_POE.Controllers
         public IActionResult CreateLogin()
             { return View(); }
 
+        public IActionResult Verify()
+        {
+            var claims = _context.Claims.ToList(); // Assuming you're using Entity Framework
+            if (claims == null || !claims.Any())
+            {
+                claims = new List<Claim>(); // Return an empty list instead of null
+            }
+            return View(claims);
+        }
+
 
         [HttpPost]
         public IActionResult CreateClaim(string username, string password)

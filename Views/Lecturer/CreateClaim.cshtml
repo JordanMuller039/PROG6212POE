@@ -16,7 +16,6 @@
 
     <title>Create Claim</title>
     <style>
-        /* Ensure both html and body take up the full height and use flexbox for centering */
         html, body {
             height: 100%;
             margin: 0;
@@ -25,23 +24,21 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            position: relative; /* Position relative to establish a stacking context */
-            overflow: hidden; /* Prevent scrolling on the overlay */
+            position: relative;
+            overflow: hidden;
         }
 
-            /* Transparent overlay spanning the entire page */
             body::before {
                 content: '';
-                position: fixed; /* Use fixed to ensure it covers the entire page */
+                position: fixed;
                 top: 0;
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background-color: rgba(255, 255, 255, 0.6); /* Transparent white layer */
-                z-index: -1; /* Ensure it is below the container */
+                background-color: rgba(255, 255, 255, 0.6);
+                z-index: -1;
             }
 
-        /* Main body background */
         body {
             background-image: url('@Url.Content("~/Pictures/lecturebackground.jpg")');
             background-size: 350px;
@@ -49,7 +46,6 @@
             background-position: center;
         }
 
-        /* Centered main block */
         .claim-container {
             background-color: white;
             min-height: 300px;
@@ -57,25 +53,26 @@
             border-radius: 8px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
             width: 100%;
-            max-width: 1200px; /* Increased width */
-            z-index: 1; /* Ensure it is above the overlay */
+            max-width: 1200px;
+            z-index: 1;
             display: flex;
-            flex-direction: row; /* Align items in a row */
-            align-items: flex-start; /* Align items at the start */
-            gap: 2rem; /* Add spacing between the form and table */
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 2rem;
+            position: relative;
         }
 
         .container-content {
-            flex: 1; /* Allow this to take up available space */
+            flex: 1;
             display: flex;
             flex-direction: column;
-            align-items: flex-start; /* Align inputs to the start of the container */
+            align-items: flex-start;
         }
 
         .logo {
-            width: 35px; /* Adjusted size */
+            width: 35px;
             height: auto;
-            margin-left: auto; /* Push logo to the right */
+            margin-left: auto;
         }
 
         h1 {
@@ -119,7 +116,6 @@
             margin-top: 1rem;
         }
 
-        /* Table styling */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -136,7 +132,6 @@
             font-weight: bold;
         }
 
-        /* Pop-up notification */
         .login-notification {
             position: fixed;
             top: 50%;
@@ -155,8 +150,8 @@
         }
 
         .calendar-container {
-            flex-shrink: 0; /* Prevent the calendar from shrinking */
-            width: 300px; /* Adjust width as needed */
+            flex-shrink: 0;
+            width: 300px;
         }
 
         .calendar {
@@ -219,6 +214,16 @@
                 color: white;
                 border-radius: 50%;
             }
+
+        .verify-claims-link {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: #007BFF;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
     </style>
 </head>
 <body>
@@ -277,7 +282,6 @@
                     <div class="calendar-day">Fri</div>
                     <div class="calendar-day">Sat</div>
                     <!-- Days of the month -->
-                    <!-- Example for a month with 30 days, adjust as needed -->
                     <div class="calendar-date"></div>
                     <div class="calendar-date"></div>
                     <div class="calendar-date">1</div>
@@ -313,6 +317,9 @@
                 </div>
             </div>
         </div>
+        <div class="verify-claims-link">
+            <a asp-controller="Lecturer" asp-action="Verify">Verify Claims</a>
+        </div>
     </div>
 
     <div class="login-notification" id="loginNotification">
@@ -330,14 +337,12 @@
 
         document.addEventListener("DOMContentLoaded", function () {
             const today = new Date();
-            const currentMonth = today.getMonth(); // Current month (0-11)
-            const currentYear = today.getFullYear(); // Current year
-            const currentDate = today.getDate(); // Current day of the month
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
+            const currentDate = today.getDate();
 
-            // Update calendar header
             document.querySelector(".calendar-month").textContent = `${today.toLocaleString('default', { month: 'long' })} ${currentYear}`;
 
-            // Highlight current date
             document.querySelectorAll(".calendar-date").forEach(dateElem => {
                 if (dateElem.textContent == currentDate) {
                     dateElem.classList.add("current");
@@ -347,4 +352,3 @@
     </script>
 </body>
 </html>
-
