@@ -77,6 +77,34 @@ namespace ST10150702_PROG6212_POE.Controllers
             return Json(new { success = true }); // Return a success response
         }
 
+        // Approve claim action with a success message
+        public IActionResult Approve(int id)
+        {
+            var claim = _context.Claims.Find(id);
+            if (claim != null)
+            {
+                claim.Status = "Approved";
+                _context.SaveChanges();
+                TempData["Message"] = "Claim approved successfully!";
+            }
+
+            return RedirectToAction("Verify");
+        }
+
+        // Reject claim action with a success message
+        public IActionResult Reject(int id)
+        {
+            var claim = _context.Claims.Find(id);
+            if (claim != null)
+            {
+                claim.Status = "Rejected";
+                _context.SaveChanges();
+                TempData["Message"] = "Claim rejected successfully!";
+            }
+
+            return RedirectToAction("Verify");
+        }
+
 
 
 

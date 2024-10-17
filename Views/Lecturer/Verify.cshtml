@@ -77,7 +77,6 @@
         }
 
         a {
-            color: #007BFF;
             text-decoration: none;
             margin-right: 10px;
         }
@@ -86,6 +85,37 @@
                 text-decoration: underline;
             }
 
+        /* Reject button (red) */
+        .reject-button {
+            color: white;
+            background-color: #dc3545;
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+            .reject-button:hover {
+                background-color: #c82333;
+            }
+
+        /* Approve button (green) */
+        .approve-button {
+            color: white;
+            background-color: #28a745;
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+            .approve-button:hover {
+                background-color: #218838;
+            }
+
+        /* Back button */
         .back-button {
             display: inline-block;
             background-color: #007BFF;
@@ -107,6 +137,14 @@
 <body>
     <div class="claims-container">
         <h2>Verify Claims</h2>
+
+        @if (TempData["Message"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["Message"]
+            </div>
+        }
+
         <table class="table">
             <thead>
                 <tr>
@@ -128,8 +166,9 @@
                         <td>@item.AmountDue</td>
                         <td>@item.Status</td>
                         <td>
-                            <a href="@Url.Action("Delete", new { id = item.ClaimID })">Deny</a>
-                            <a href="@Url.Action("Approve", new { id = item.ClaimID })">Approve</a>
+                            <a href="@Url.Action("Reject", new { id = item.ClaimID })" class="reject-button">Reject</a>
+                            <a href="@Url.Action("Approve", new { id = item.ClaimID })" class="approve-button">Approve</a>
+
                         </td>
                     </tr>
                 }
