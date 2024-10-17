@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "LkgoPCxf2rYXGO4S87NXUiCtGpw9XMifjiFNc6fD034=",
+  "Hash": "b3qdnNQCJVxFEWw0BSZUttDYVVrDjH9ybe11o1BYUNo=",
   "Source": "ST10150702_PROG6212_POE",
   "BasePath": "_content/ST10150702_PROG6212_POE",
   "Mode": "Default",
@@ -72,6 +72,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\site.css"
+    },
+    {
+      "Identity": "D:\\Uni\\Varsity College\\Year 2\\Programming 2B\\ST10150702_PROG6212_POE\\wwwroot\\favicon.ico",
+      "SourceId": "ST10150702_PROG6212_POE",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Uni\\Varsity College\\Year 2\\Programming 2B\\ST10150702_PROG6212_POE\\wwwroot\\",
+      "BasePath": "_content/ST10150702_PROG6212_POE",
+      "RelativePath": "favicon.ico",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\favicon.ico"
     },
     {
       "Identity": "D:\\Uni\\Varsity College\\Year 2\\Programming 2B\\ST10150702_PROG6212_POE\\wwwroot\\js\\site.js",

@@ -21,6 +21,10 @@
       "PackagePath": "staticwebassets\\css\\site.css"
     },
     {
+      "Id": "D:\\Uni\\Varsity College\\Year 2\\Programming 2B\\ST10150702_PROG6212_POE\\wwwroot\\favicon.ico",
+      "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
       "Id": "D:\\Uni\\Varsity College\\Year 2\\Programming 2B\\ST10150702_PROG6212_POE\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },

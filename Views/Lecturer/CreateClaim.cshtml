@@ -7,9 +7,92 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <title>Create Claim</title>
     <style>
-        /* ... (previous styles remain unchanged) ... */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body {
+            background-image: url('@Url.Content("~/Pictures/lecturebackground.jpg")');
+            background-size: 350px;
+            background-repeat: repeat;
+            background-position: center;
+        }
+
+        /* Tab control container */
+        .tab-container {
+            background-color: white;
+            min-height: 300px;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 1200px;
+            z-index: 1;
+        }
+
+        /* Tab navigation */
+        .tab-navigation {
+            display: flex;
+            margin-bottom: 1rem;
+            cursor: pointer;
+        }
+
+            .tab-navigation div {
+                flex: 1;
+                padding: 1rem;
+                text-align: center;
+                background-color: #f4f4f4;
+                border: 1px solid #ddd;
+            }
+
+                .tab-navigation div.active {
+                    background-color: #007BFF;
+                    color: white;
+                }
+
+        /* Tab content */
+        .tab-content {
+            display: none;
+        }
+
+            .tab-content.active {
+                display: block;
+            }
+
+        /* Form content (Create Claim) */
+        form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+            .form-group label {
+                margin-bottom: 0.5rem;
+            }
+
+            .form-group input, .form-group select, .form-group textarea {
+                padding: 0.5rem;
+                border-radius: 4px;
+                border: 1px solid #ddd;
+                box-sizing: border-box;
+            }
 
         .submit-button {
+            grid-column: 2 / 3; /* Makes the submit button align with the second column */
             background-color: #007BFF;
             color: white;
             border: none;
@@ -19,9 +102,27 @@
             font-size: 16px;
             font-weight: bold;
             margin-top: 1rem;
-            align-self: flex-end;
+            justify-self: end;
         }
 
+        /* Table for viewing claims */
+        .claim-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .claim-table th, .claim-table td {
+                border: 1px solid #ddd;
+                padding: 0.75rem;
+                text-align: left;
+            }
+
+            .claim-table th {
+                background-color: #f4f4f4;
+                font-weight: bold;
+            }
+
+        /* Popup overlay */
         .popup-overlay {
             position: fixed;
             top: 0;
@@ -68,11 +169,85 @@
             background-color: #f4f4f4;
             color: #333;
         }
+
+        /* Calendar container */
+        .calendar-container {
+            flex-shrink: 0;
+            width: 300px;
+        }
+
+        .calendar {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        .calendar-nav {
+            cursor: pointer;
+        }
+
+        .calendar-month {
+            flex: 1;
+            text-align: center;
+        }
+
+        .calendar-days,
+        .calendar-dates {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            border-top: 1px solid #ddd;
+        }
+
+        .calendar-day,
+        .calendar-date {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+
+        .calendar-day {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        .calendar-date {
+            cursor: pointer;
+        }
+
+            .calendar-date:hover {
+                background-color: #e0e0e0;
+            }
+
+            .calendar-date.current {
+                background-color: #007BFF;
+                color: white;
+                border-radius: 50%;
+            }
     </style>
+
 </head>
 <body>
-    <div class="claim-container">
-        <div class="container-content">
+    <div class="tab-container">
+        <!-- Tab navigation -->
+        <div class="tab-navigation">
+            <div class="tab" onclick="openTab(event, 'create-claim')" id="defaultTab">Create Claim</div>
+            <div class="tab" onclick="openTab(event, 'view-claims')">View Claims</div>
+        </div>
+        <!-- Create Claim tab content -->
+        <div id="create-claim" class="tab-content active">
             <h1>Create Claim</h1>
             <form id="claimForm">
                 <div class="form-group">
@@ -108,65 +283,60 @@
                 <div class="form-group">
                     <label for="supportingImages">Supporting Images</label>
                     <input type="file" id="supportingImages" name="supportingImages" multiple>
+
                 </div>
+
                 <button type="submit" class="submit-button">Submit</button>
             </form>
         </div>
-        <!-- ... (calendar container remains unchanged) ... -->
-        <div class="calendar-container">
-            <div class="calendar">
-                <div class="calendar-header">
-                    <span class="calendar-nav calendar-prev">&#9664;</span>
-                    <span class="calendar-month">September 2024</span>
-                    <span class="calendar-nav calendar-next">&#9654;</span>
-                </div>
-                <div class="calendar-days">
-                    <div class="calendar-day">Sun</div>
-                    <div class="calendar-day">Mon</div>
-                    <div class="calendar-day">Tue</div>
-                    <div class="calendar-day">Wed</div>
-                    <div class="calendar-day">Thu</div>
-                    <div class="calendar-day">Fri</div>
-                    <div class="calendar-day">Sat</div>
-                    <!-- Days of the month -->
-                    <div class="calendar-date"></div>
-                    <div class="calendar-date"></div>
-                    <div class="calendar-date">1</div>
-                    <div class="calendar-date">2</div>
-                    <div class="calendar-date">3</div>
-                    <div class="calendar-date">4</div>
-                    <div class="calendar-date">5</div>
-                    <div class="calendar-date">6</div>
-                    <div class="calendar-date">7</div>
-                    <div class="calendar-date">8</div>
-                    <div class="calendar-date">9</div>
-                    <div class="calendar-date">10</div>
-                    <div class="calendar-date">11</div>
-                    <div class="calendar-date">12</div>
-                    <div class="calendar-date">13</div>
-                    <div class="calendar-date">14</div>
-                    <div class="calendar-date">15</div>
-                    <div class="calendar-date">16</div>
-                    <div class="calendar-date">17</div>
-                    <div class="calendar-date">18</div>
-                    <div class="calendar-date">19</div>
-                    <div class="calendar-date">20</div>
-                    <div class="calendar-date">21</div>
-                    <div class="calendar-date">22</div>
-                    <div class="calendar-date">23</div>
-                    <div class="calendar-date">24</div>
-                    <div class="calendar-date">25</div>
-                    <div class="calendar-date">26</div>
-                    <div class="calendar-date">27</div>
-                    <div class="calendar-date">28</div>
-                    <div class="calendar-date">29</div>
-                    <div class="calendar-date">30</div>
-                </div>
-            </div>
-        </div>
-    </div>
+        
 
-    <div id="popupOverlay" class="popup-overlay" style="display: none;">
+
+        <!-- View Claims tab content -->
+        @model IEnumerable<YourNamespace.ClaimModel>
+
+        <div id="view-claims" class="tab-content">
+            <h1>View Claims</h1>
+
+            @if (Model == null || !Model.Any())
+            {
+                <p>No claims found.</p>
+            }
+            else
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ClaimID</th>
+                            <th>LecturerID</th>
+                            <th>Total Hours Worked</th>
+                            <th>Amount Due</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.ClaimID</td>
+                                <td>@item.LecturerID</td>
+                                <td>@item.TotalHoursWorked</td>
+                                <td>@item.AmountDue</td>
+                                <td>@item.Status</td>
+                                <td>
+                                    <a href="@Url.Action("Delete", new { id = item.ClaimID })">Delete</a>
+                                    <a href="@Url.Action("Approve", new { id = item.ClaimID })">Approve</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+
+
+        <div id="popupOverlay" class="popup-overlay" style="display: none;">
         <div class="popup-content">
             <h2>Confirm Claim Submission</h2>
             <div id="popupData"></div>
@@ -246,6 +416,33 @@
                 }
             });
         });
+
+        /// Tab Control
+        // Function to open the desired tab and hide the others
+        function openTab(evt, tabName) {
+            // Hide all tab contents
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+
+            // Remove "active" class from all tabs
+            tablinks = document.getElementsByClassName("tab");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+
+            // Show the current tab and add "active" class to the button
+            document.getElementById(tabName).style.display = "block";
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        // Open the default tab (Create Claim)
+        document.getElementById("defaultTab").click();
+    </script>
 
     </script>
 </body>
