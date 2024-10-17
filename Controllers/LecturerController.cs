@@ -74,9 +74,10 @@ namespace ST10150702_PROG6212_POE.Controllers
             _context.Claims.Remove(claim); // Remove the claim
             _context.SaveChanges(); // Save changes to the database
 
-            // Redirect to the CreateClaim page or wherever you want to go after deletion
-            return RedirectToAction("CreateClaim", "Lecturer");
+            return Json(new { success = true }); // Return a success response
         }
+
+
 
 
 

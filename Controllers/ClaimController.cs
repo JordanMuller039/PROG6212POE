@@ -21,18 +21,22 @@ namespace ST10150702_PROG6212_POE.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Delete(int id)
+        public IActionResult Delete(int id)
         {
-            var claim = await _context.Claims.FindAsync(id);
+            var claim = _context.Claims.Find(id); // Find the claim by ID
             if (claim == null)
             {
-                return NotFound(); // Handle the case when the claim is not found
+                // Return a JSON response with success: false if claim is not found
+                return Json(new { success = false, message = "Claim not found" });
             }
 
-            _context.Claims.Remove(claim);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index"); // Redirect to the view claims page or another page
+            _context.Claims.Remove(claim); // Remove the claim
+            _context.SaveChanges(); // Save changes to the database
+
+            // Return a JSON response indicating success
+            return Json(new { success = true, message = "Claim deleted successfully" });
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Create(Claim claim)
