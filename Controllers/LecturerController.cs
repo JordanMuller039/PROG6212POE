@@ -62,20 +62,24 @@ namespace ST10150702_PROG6212_POE.Controllers
             return View(lecturer);
         }
 
-        public async Task<IActionResult> Delete(int id)
+        [HttpPost]
+        public IActionResult Delete(int id)
         {
-            var lecturer = await _context.Lecturers.FindAsync(id);
-            if (lecturer == null)
+            var claim = _context.Claims.Find(id); // Find the claim by ID
+            if (claim == null)
             {
-                return NotFound();
+                return NotFound(); // Return a 404 if the claim doesn't exist
             }
 
-            _context.Lecturers.Remove(lecturer);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            _context.Claims.Remove(claim); // Remove the claim
+            _context.SaveChanges(); // Save changes to the database
 
+            // Redirect to the CreateClaim page or wherever you want to go after deletion
+            return RedirectToAction("CreateClaim", "Lecturer");
         }
-        
+
+
+
 
     }
 }

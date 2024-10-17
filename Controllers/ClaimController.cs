@@ -20,18 +20,18 @@ namespace ST10150702_PROG6212_POE.Controllers
         }
 
 
+        [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            var lecturer = await _context.Lecturers.FindAsync(id);
-            if (lecturer == null)
+            var claim = await _context.Claims.FindAsync(id);
+            if (claim == null)
             {
-                return NotFound();
+                return NotFound(); // Handle the case when the claim is not found
             }
 
-            _context.Lecturers.Remove(lecturer);
+            _context.Claims.Remove(claim);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-
+            return RedirectToAction("Index"); // Redirect to the view claims page or another page
         }
 
         [HttpPost]
