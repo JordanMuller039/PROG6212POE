@@ -105,6 +105,24 @@
                 .signup-link a:hover {
                     text-decoration: underline;
                 }
+
+        /* Style for the new verify claims link */
+        .verify-claims-link {
+            text-align: center;
+            margin-top: 20px;
+            color: grey;
+            font-style: italic;
+        }
+
+            .verify-claims-link a {
+                color: #0066cc; /* Same blue as the button */
+                font-weight: bold;
+                text-decoration: none;
+            }
+
+                .verify-claims-link a:hover {
+                    text-decoration: underline;
+                }
     </style>
 </head>
 <body>
@@ -119,6 +137,11 @@
         </form>
         <div class="signup-link">
             <a asp-controller="Lecturer" asp-action="CreateLogin">Click Here to Sign-up!</a>
+        </div>
+
+        <!-- New section for Program Coordinators and Academic Managers -->
+        <div class="verify-claims-link">
+            Program Coordinators and Academic Managers, <a asp-controller="Lecturer" asp-action="Verify">click here</a> to verify claims.
         </div>
     </div>
 </body>

@@ -33,5 +33,18 @@ namespace ST10150702_PROG6212_POE.Controllers
             return RedirectToAction(nameof(Index));
 
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromForm] Claim claim)
+        {
+            if (ModelState.IsValid)
+            {
+                claim.Status = "Pending"; // Set initial status
+                _context.Claims.Add(claim);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true });
+            }
+            return Json(new { success = false });
+        }
     }
 }

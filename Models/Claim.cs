@@ -10,6 +10,9 @@ namespace ST10150702_PROG6212_POE.Models
         public int TotalHoursWorked { get; set; }
         public decimal AmountDue {  get; set; }
         public string Status {  get; set; }
+        public string ModCode { get; set; }
+
+        public string desc { get; set; }
 
     }
 }
