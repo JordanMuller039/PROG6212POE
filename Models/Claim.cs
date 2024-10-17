@@ -22,5 +22,7 @@ namespace ST10150702_PROG6212_POE.Models
 
         public string desc { get; set; }
 
+        public string? DocumentPath { get; set; }
+
     }
 }

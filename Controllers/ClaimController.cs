@@ -39,7 +39,7 @@ namespace ST10150702_PROG6212_POE.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Create(Claim claim)
+        public async Task<IActionResult> Create(Claim claim, List<IFormFile> supportingImages)
         {
             if (ModelState.IsValid)
             {
@@ -49,17 +49,56 @@ namespace ST10150702_PROG6212_POE.Controllers
                     claim.Status = "Pending"; // Default status
                 }
 
-                await _context.Claims.AddAsync(claim);
-                await _context.SaveChangesAsync(); // This will save the new claim and generate ClaimID automatically
+                // Initialize DocumentPath to null or empty
+                claim.DocumentPath = null;
 
-                return Json(new { success = true, claimId = claim.ClaimID }); // Optionally return the new ClaimID
+                // Handle document uploads if there are any
+                if (supportingImages != null && supportingImages.Count > 0)
+                {
+                    var documentPaths = new List<string>();
+
+                    foreach (var file in supportingImages)
+                    {
+                        if (file.Length > 0)
+                        {
+                            var filePath = Path.Combine("uploads", file.FileName); // Adjust path as needed
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await file.CopyToAsync(stream);
+                            }
+                            documentPaths.Add(filePath); // Save the path
+                        }
+                    }
+
+                    // Join document paths into a single string if there are any documents
+                    if (documentPaths.Count > 0)
+                    {
+                        claim.DocumentPath = string.Join(",", documentPaths);
+                    }
+                }
+
+                await _context.Claims.AddAsync(claim);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, claimId = claim.ClaimID });
             }
 
-            // Handle validation errors
-            var errors = ModelState.SelectMany(x => x.Value.Errors.Select(e => e.ErrorMessage)).ToList();
+            // Log ModelState errors for debugging
+            var errors = ModelState
+                .Where(x => x.Value.Errors.Count > 0)
+                .SelectMany(x => x.Value.Errors)
+                .Select(e => e.ErrorMessage)
+                .ToList();
+
+            // Optionally log errors to console (or your preferred logging mechanism)
+            foreach (var error in errors)
+            {
+                Console.WriteLine(error); // Use your logging method here
+            }
+
+            // Return errors in the response
             return Json(new { success = false, errors });
         }
-
 
 
 

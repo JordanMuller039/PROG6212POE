@@ -152,7 +152,10 @@
                     <th>LecturerID</th>
                     <th>Total Hours Worked</th>
                     <th>Amount Due</th>
+                    <th>Module Code</th>
+                    <th>Description</th>
                     <th>Status</th>
+                    <th>Supporting Documents</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -164,7 +167,29 @@
                         <td>@item.LecturerID</td>
                         <td>@item.TotalHoursWorked</td>
                         <td>@item.AmountDue</td>
+                        <td>@item.ModCode</td>
+                        <td>@item.desc</td>
                         <td>@item.Status</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.DocumentPath))
+                            {
+                                var documents = item.DocumentPath.Split(',');
+                                foreach (var doc in documents)
+                                {
+                                    if (!string.IsNullOrWhiteSpace(doc)) // Check if the document path is not empty
+                                    {
+                                        var fileName = System.IO.Path.GetFileName(doc);
+                                        <div>
+                                            <a href="@Url.Content("~/" + doc)" target="_blank">@fileName</a>
+                                        </div>
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <span>No documents uploaded</span>
+                            }
+                        </td>
                         <td>
                             <a href="@Url.Action("Reject", new { id = item.ClaimID })" class="reject-button">Reject</a>
                             <a href="@Url.Action("Approve", new { id = item.ClaimID })" class="approve-button">Approve</a>

@@ -50,6 +50,8 @@ namespace ST10150702_PROG6212_POE.Controllers
             return View(claims); // Pass claims to the view
         }
 
+
+
         [HttpPost]
         public async Task<IActionResult> Create(Lecturer lecturer)
         {
