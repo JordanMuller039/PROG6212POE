@@ -10,5 +10,15 @@ namespace ST10150702_PROG6212_POE.Data
 
         public DbSet<Lecturer> Lecturers { get; set; }
         public DbSet<Claim> Claims { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Claim>()
+                .Property(c => c.AmountDue)
+                .HasPrecision(18, 2); // Example: 18 digits total, 2 after the decimal point
+        }
+
     }
+
+
 }

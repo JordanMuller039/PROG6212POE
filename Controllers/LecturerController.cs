@@ -39,17 +39,15 @@ namespace ST10150702_PROG6212_POE.Controllers
 
 
         [HttpPost]
-        public IActionResult CreateClaim(string username, string password)
-        {
-            // Validate the username and password
-            // If valid, return the CreateClaim view
-            return View("CreateClaim");
-        }
-
         public IActionResult CreateClaim()
         {
-            var claims = _context.Claims.ToList(); // or however you're getting your claims
-            return View(claims); // Pass the list of claims to the view
+            var claims = _context.Claims.ToList(); // Fetch claims
+            if (claims == null || !claims.Any())
+            {
+                claims = new List<Claim>(); // Return an empty list if no claims
+            }
+
+            return View(claims); // Pass claims to the view
         }
 
         [HttpPost]

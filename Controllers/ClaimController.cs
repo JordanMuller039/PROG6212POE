@@ -35,16 +35,29 @@ namespace ST10150702_PROG6212_POE.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] Claim claim)
+        public async Task<IActionResult> Create(Claim claim)
         {
             if (ModelState.IsValid)
             {
-                claim.Status = "Pending"; // Set initial status
-                _context.Claims.Add(claim);
-                await _context.SaveChangesAsync();
-                return Json(new { success = true });
+                // Set default status if not provided
+                if (string.IsNullOrWhiteSpace(claim.Status))
+                {
+                    claim.Status = "Pending"; // Default status
+                }
+
+                await _context.Claims.AddAsync(claim);
+                await _context.SaveChangesAsync(); // This will save the new claim and generate ClaimID automatically
+
+                return Json(new { success = true, claimId = claim.ClaimID }); // Optionally return the new ClaimID
             }
-            return Json(new { success = false });
+
+            // Handle validation errors
+            var errors = ModelState.SelectMany(x => x.Value.Errors.Select(e => e.ErrorMessage)).ToList();
+            return Json(new { success = false, errors });
         }
+
+
+
+
     }
 }

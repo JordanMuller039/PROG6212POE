@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@model List<ST10150702_PROG6212_POE.Models.Claim>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -249,22 +250,22 @@
         <!-- Create Claim tab content -->
         <div id="create-claim" class="tab-content active">
             <h1>Create Claim</h1>
-            <form id="claimForm">
+            <form asp-action="Create" asp-controller="Claim" method="post">
                 <div class="form-group">
-                    <label for="lecturerId">Lecturer ID</label>
-                    <input type="number" id="lecturerId" name="lecturerId" required>
+                    <label for="LecturerID">Lecturer ID</label>
+                    <input type="number" id="LecturerID" name="LecturerID" required>
                 </div>
                 <div class="form-group">
-                    <label for="hoursWorked">Total Hours Worked</label>
-                    <input type="number" id="hoursWorked" name="hoursWorked" step="0.01" required>
+                    <label for="TotalHoursWorked">Total Hours Worked</label>
+                    <input type="number" id="TotalHoursWorked" name="TotalHoursWorked" step="0.01" required>
                 </div>
                 <div class="form-group">
-                    <label for="amountDue">Amount Due</label>
-                    <input type="number" id="amountDue" name="amountDue" step="0.01" required>
+                    <label for="AmountDue">Amount Due</label>
+                    <input type="number" id="AmountDue" name="AmountDue" step="0.01" required>
                 </div>
                 <div class="form-group">
                     <label for="moduleCode">Module Code</label>
-                    <select id="moduleCode" name="moduleCode" required>
+                    <select id="ModCode" name="ModCode" required>
                         <option value="PROG6111">PROG6111</option>
                         <option value="PROG6222">PROG6222</option>
                         <option value="CLDV6212">CLDV6212</option>
@@ -277,8 +278,8 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea id="description" name="description" required></textarea>
+                    <label for="Description">Description</label>
+                    <textarea id="desc" name="desc" required></textarea>
                 </div>
                 <div class="form-group">
                     <label for="supportingImages">Supporting Images</label>
@@ -289,63 +290,53 @@
                 <button type="submit" class="submit-button">Submit</button>
             </form>
         </div>
-        
-
 
         <!-- View Claims tab content -->
-        @model IEnumerable<YourNamespace.ClaimModel>
-
         <div id="view-claims" class="tab-content">
             <h1>View Claims</h1>
-
-            @if (Model == null || !Model.Any())
-            {
-                <p>No claims found.</p>
-            }
-            else
-            {
-                <table class="table">
-                    <thead>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ClaimID</th>
+                        <th>LecturerID</th>
+                        <th>Total Hours Worked</th>
+                        <th>Amount Due</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
                         <tr>
-                            <th>ClaimID</th>
-                            <th>LecturerID</th>
-                            <th>Total Hours Worked</th>
-                            <th>Amount Due</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <td>@item.ClaimID</td>
+                            <td>@item.LecturerID</td>
+                            <td>@item.TotalHoursWorked</td>
+                            <td>@item.AmountDue</td>
+                            <td>@item.Status</td>
+                            <td>
+                                <a href="@Url.Action("Delete", new { id = item.ClaimID })">Delete</a>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>@item.ClaimID</td>
-                                <td>@item.LecturerID</td>
-                                <td>@item.TotalHoursWorked</td>
-                                <td>@item.AmountDue</td>
-                                <td>@item.Status</td>
-                                <td>
-                                    <a href="@Url.Action("Delete", new { id = item.ClaimID })">Delete</a>
-                                    <a href="@Url.Action("Approve", new { id = item.ClaimID })">Approve</a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            }
-        </div>
-
-
-        <div id="popupOverlay" class="popup-overlay" style="display: none;">
-        <div class="popup-content">
-            <h2>Confirm Claim Submission</h2>
-            <div id="popupData"></div>
-            <div class="popup-buttons">
-                <button class="popup-button popup-button-cancel" onclick="closePopup()">Cancel</button>
-                <button class="popup-button popup-button-confirm" onclick="submitClaim()">Confirm</button>
-            </div>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
+
+
+            <div id="popupOverlay" class="popup-overlay" style="display: none;">
+                <div class="popup-content">
+                    <h2>Confirm Claim Submission</h2>
+                    <div id="popupData"></div>
+                    <div class="popup-buttons">
+                        <button class="popup-button popup-button-cancel" onclick="closePopup()">Cancel</button>
+                        <button class="popup-button popup-button-confirm" onclick="submitClaim()">Confirm</button>
+                    </div>
+                </div>
+            </div>
+
+
 
     <script>
         document.getElementById('claimForm').addEventListener('submit', function (e) {
@@ -353,25 +344,9 @@
             showPopup();
         });
 
-        function showPopup() {
-            const formData = new FormData(document.getElementById('claimForm'));
-            let popupContent = '<ul>';
-            for (let [key, value] of formData.entries()) {
-                if (key !== 'supportingImages') {
-                    popupContent += `<li><strong>${key}:</strong> ${value}</li>`;
-                }
-            }
-            popupContent += '</ul>';
-            document.getElementById('popupData').innerHTML = popupContent;
-            document.getElementById('popupOverlay').style.display = 'flex';
-        }
-
-        function closePopup() {
-            document.getElementById('popupOverlay').style.display = 'none';
-        }
-
         function submitClaim() {
             const formData = new FormData(document.getElementById('claimForm'));
+
             fetch('/Claim/Create', {
                 method: 'POST',
                 body: formData
@@ -393,29 +368,22 @@
                 });
         }
 
-        // ... (previous scripts for login notification and calendar remain unchanged) ...
-        document.addEventListener("DOMContentLoaded", function () {
-            var notification = document.getElementById("loginNotification");
-            notification.style.opacity = 1;
-            setTimeout(function () {
-                notification.style.opacity = 0;
-            }, 3000);
-        });
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const today = new Date();
-            const currentMonth = today.getMonth();
-            const currentYear = today.getFullYear();
-            const currentDate = today.getDate();
-
-            document.querySelector(".calendar-month").textContent = `${today.toLocaleString('default', { month: 'long' })} ${currentYear}`;
-
-            document.querySelectorAll(".calendar-date").forEach(dateElem => {
-                if (dateElem.textContent == currentDate) {
-                    dateElem.classList.add("current");
+        function showPopup() {
+            const formData = new FormData(document.getElementById('claimForm'));
+            let popupContent = '<ul>';
+            for (let [key, value] of formData.entries()) {
+                if (key !== 'supportingImages') {
+                    popupContent += `<li><strong>${key}:</strong> ${value}</li>`;
                 }
-            });
-        });
+            }
+            popupContent += '</ul>';
+            document.getElementById('popupData').innerHTML = popupContent;
+            document.getElementById('popupOverlay').style.display = 'flex';
+        }
+
+        function closePopup() {
+            document.getElementById('popupOverlay').style.display = 'none';
+        }
 
         /// Tab Control
         // Function to open the desired tab and hide the others
@@ -444,6 +412,5 @@
         document.getElementById("defaultTab").click();
     </script>
 
-    </script>
 </body>
 </html>
