@@ -1,15 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ST10150702_PROG6212_POE.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-
-// App DB Context
 namespace ST10150702_PROG6212_POE.Data
 {
-    public class AppDBContext : IdentityDbContext
+    public class AppDBContext : DbContext
     {
-        public AppDBContext(DbContextOptions<AppDBContext> options) : base(options)
-        {
+        public AppDBContext(DbContextOptions<AppDBContext> options) : base(options) 
+        { 
         }
 
         public DbSet<Lecturer> Lecturers { get; set; }
@@ -17,11 +13,12 @@ namespace ST10150702_PROG6212_POE.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
             modelBuilder.Entity<Claim>()
                 .Property(c => c.AmountDue)
-                .HasPrecision(18, 2); // Configure precision for AmountDue
+                .HasPrecision(18, 2); // Example: 18 digits total, 2 after the decimal point
         }
+
     }
+
+
 }
