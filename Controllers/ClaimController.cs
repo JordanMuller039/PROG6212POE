@@ -38,7 +38,7 @@ namespace ST10150702_PROG6212_POE.Controllers
         }
 
 
-        [HttpPost]
+                [HttpPost]
         public async Task<IActionResult> Create(Claim claim, List<IFormFile> supportingImages)
         {
             if (ModelState.IsValid)

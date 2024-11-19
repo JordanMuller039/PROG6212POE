@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Uni\\Varsity College\\Year 2\\Programming 2B\\ST10150702_PROG6212_POE\\ST10150702_PROG6212_POE.csproj": {}
+    "C:\\Users\\Vermo\\Documents\\ST10150702_PROG6212_POE_Part2\\ST10150702_PROG6212_POE\\ST10150702_PROG6212_POE.csproj": {}
   },
   "projects": {
-    "D:\\Uni\\Varsity College\\Year 2\\Programming 2B\\ST10150702_PROG6212_POE\\ST10150702_PROG6212_POE.csproj": {
+    "C:\\Users\\Vermo\\Documents\\ST10150702_PROG6212_POE_Part2\\ST10150702_PROG6212_POE\\ST10150702_PROG6212_POE.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Uni\\Varsity College\\Year 2\\Programming 2B\\ST10150702_PROG6212_POE\\ST10150702_PROG6212_POE.csproj",
+        "projectUniqueName": "C:\\Users\\Vermo\\Documents\\ST10150702_PROG6212_POE_Part2\\ST10150702_PROG6212_POE\\ST10150702_PROG6212_POE.csproj",
         "projectName": "ST10150702_PROG6212_POE",
-        "projectPath": "D:\\Uni\\Varsity College\\Year 2\\Programming 2B\\ST10150702_PROG6212_POE\\ST10150702_PROG6212_POE.csproj",
+        "projectPath": "C:\\Users\\Vermo\\Documents\\ST10150702_PROG6212_POE_Part2\\ST10150702_PROG6212_POE\\ST10150702_PROG6212_POE.csproj",
         "packagesPath": "C:\\Users\\Vermo\\.nuget\\packages\\",
-        "outputPath": "D:\\Uni\\Varsity College\\Year 2\\Programming 2B\\ST10150702_PROG6212_POE\\obj\\",
+        "outputPath": "C:\\Users\\Vermo\\Documents\\ST10150702_PROG6212_POE_Part2\\ST10150702_PROG6212_POE\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Vermo\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -46,19 +46,31 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Authentication.Cookies": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.AspNetCore.Identity.UI": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[9.0.0, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[8.0.0, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[9.0.0, )"
             }
           },
           "imports": [
