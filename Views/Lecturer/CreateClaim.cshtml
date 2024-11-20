@@ -195,6 +195,61 @@
             background-color: #f58d42;
             color: white;
         }
+
+        .filter-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+            .filter-group label {
+                margin-bottom: 0.25rem;
+                font-size: 0.9rem;
+            }
+
+            .filter-group input, .filter-group select {
+                padding: 0.5rem;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+            }
+
+        .filter-button-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-end;
+        }
+
+        .go-button, .reset-button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            height: 38px; /* Consistent height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .reset-button {
+            background-color: #6c757d;
+        }
+
+        .filter-summary {
+            margin-bottom: 1rem;
+            color: #666;
+            font-style: italic;
+        }
+
     </style>
 </head>
 <body>
@@ -260,69 +315,128 @@
 
         <div id="view-claims" class="tab-content">
             <h1>View Claims</h1>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>ClaimID</th>
-                        <th>LecturerID</th>
-                        <th>Total Hours Worked</th>
-                        <th>Hourly Rate</th>
-                        <th>Amount Due</th>
-                        <th>Module Code</th>
-                        <th>Description</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                        <th>Supporting Documents</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
+
+            <!-- Filter Container -->
+            <div class="filter-container">
+                <div class="filter-group">
+                    <label for="filterLecturerID">Lecturer ID</label>
+                    <input type="number" id="filterLecturerID" placeholder="Filter by Lecturer ID">
+                </div>
+                <div class="filter-group">
+                    <label for="filterHoursWorked">Hours Worked</label>
+                    <select id="filterHoursWorked">
+                        <option value="">All</option>
+                        <option value="0-10">0 - 10</option>
+                        <option value="10-20">10 - 20</option>
+                        <option value="20-30">20 - 30</option>
+                        <option value="30+">30+</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filterHourlyRate">Hourly Rate</label>
+                    <select id="filterHourlyRate">
+                        <option value="">All</option>
+                        <option value="0-50">R0 - R50</option>
+                        <option value="50-100">R50 - R100</option>
+                        <option value="100+">R100+</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filterModuleCode">Module Code</label>
+                    <select id="filterModuleCode">
+                        <option value="">All Modules</option>
+                        <option value="PROG6111">PROG6111</option>
+                        <option value="PROG6222">PROG6222</option>
+                        <option value="CLDV6212">CLDV6212</option>
+                        <option value="ADDB7311">ADDB7311</option>
+                        <option value="CLDV5111">CLDV5111</option>
+                        <option value="MPFD5622">MPFD5622</option>
+                        <option value="SOEN6212">SOEN6212</option>
+                        <option value="HETC7331">HETC7331</option>
+                        <option value="FDAB6221">FDAB6221</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filterAmount">Amount Due</label>
+                    <select id="filterAmount">
+                        <option value="">All</option>
+                        <option value="0-500">R0 - R500</option>
+                        <option value="500-1000">R500 - R1000</option>
+                        <option value="1000+">R1000+</option>
+                    </select>
+                </div>
+                <div class="filter-button-group">
+                    <button id="goFilterButton" class="go-button">Go</button>
+                    <button onclick="resetFilters()" class="reset-button">Reset</button>
+                </div>
+            </div>
+
+            <div id="filterSummary" class="filter-summary"></div>
+
+            <!-- Main Claims View -->
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td>@item.ClaimID</td>
-                            <td>@item.LecturerID</td>
-                            <td>@item.TotalHoursWorked</td>
-                            <td>@item.HourlyRate</td>
-                            <td>@item.AmountDue</td>
-                            <td>@item.ModCode</td>
-                            <td>@item.desc</td>
-                            <td class="status-column" style="
-                                @if(item.Status == "Approved") {
-                                    @:background-color: #4CAF50; color: white;
-                                } else if(item.Status == "Rejected") {
-                                    @:background-color: #f44336; color: white;
-                                } else if(item.Status == "Pending") {
-                                    @:background-color: #f58d42; color: white;
-                                }">
-                                @item.Status
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-danger" onclick="deleteClaim(@item.ClaimID)">Delete</button>
-                            </td>
-                            <td>
-                                @if (!string.IsNullOrEmpty(item.DocumentPath))
-                                {
-                                    var documents = item.DocumentPath.Split(',');
-                                    foreach (var doc in documents)
+                            <th>ClaimID</th>
+                            <th>LecturerID</th>
+                            <th>Total Hours Worked</th>
+                            <th>Hourly Rate</th>
+                            <th>Amount Due</th>
+                            <th>Module Code</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                            <th>Supporting Documents</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.ClaimID</td>
+                                <td>@item.LecturerID</td>
+                                <td>@item.TotalHoursWorked</td>
+                                <td>@item.HourlyRate</td>
+                                <td>@item.AmountDue</td>
+                                <td>@item.ModCode</td>
+                                <td>@item.desc</td>
+                                <td class="status-column" style="
+                                    @if(item.Status == "Approved") {
+                                        @:background-color: #4CAF50; color: white;
+                                    } else if(item.Status == "Rejected") {
+                                        @:background-color: #f44336; color: white;
+                                    } else if(item.Status == "Pending") {
+                                        @:background-color: #f58d42; color: white;
+                                    }">
+                                    @item.Status
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger" onclick="deleteClaim(@item.ClaimID)">Delete</button>
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.DocumentPath))
                                     {
-                                        if (!string.IsNullOrWhiteSpace(doc))
+                                        var documents = item.DocumentPath.Split(',');
+                                        foreach (var doc in documents)
                                         {
-                                            var fileName = System.IO.Path.GetFileName(doc);
-                                            <div>
-                                                <a href="@Url.Content("~/" + doc)" target="_blank">@fileName</a>
-                                            </div>
+                                            if (!string.IsNullOrWhiteSpace(doc))
+                                            {
+                                                var fileName = System.IO.Path.GetFileName(doc);
+                                                <div>
+                                                    <a href="@Url.Content("~/" + doc)" target="_blank">@fileName</a>
+                                                </div>
+                                            }
                                         }
                                     }
-                                }
-                                else
-                                {
-                                    <span>No documents uploaded</span>
-                                }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                                    else
+                                    {
+                                        <span>No documents uploaded</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             <p id="delete-message" style="color: green; display: none;">Claim deleted successfully!</p>
         </div>
 
@@ -337,6 +451,8 @@
             </div>
         </div>
 
+        <!-- JAVASCRIPT -->
+        <!--------------------------------------------------------------------------------------------------------------------------->
         <script>
             // Function to calculate and update Amount Due
             function calculateAmountDue() {
@@ -419,6 +535,140 @@
                     });
                 }
             }
+
+            // Filtering
+            //-------------------------------------------------------------------------------------------------
+
+            function filterClaims() {
+                // Get all filter values
+                const lecturerIDFilter = document.getElementById('filterLecturerID').value.trim();
+                const hoursWorkedFilter = document.getElementById('filterHoursWorked').value;
+                const hourlyRateFilter = document.getElementById('filterHourlyRate').value;
+                const moduleCodeFilter = document.getElementById('filterModuleCode').value;
+                const amountFilter = document.getElementById('filterAmount').value;
+
+                // Select the table body
+                const tableBody = document.querySelector('table tbody');
+                const rows = tableBody.querySelectorAll('tr');
+                let visibleRowCount = 0;
+
+                rows.forEach(row => {
+                    // Get cell values using index
+                    const lecturerID = row.cells[1].textContent.trim();
+                    const hoursWorked = parseFloat(row.cells[2].textContent);
+                    const hourlyRate = parseFloat(row.cells[3].textContent);
+                    const amount = parseFloat(row.cells[4].textContent);
+                    const moduleCode = row.cells[5].textContent.trim();
+
+                    let show = true;
+
+                    // Lecturer ID Filter - Exact match
+                    if (lecturerIDFilter && lecturerID !== lecturerIDFilter) {
+                        show = false;
+                    }
+
+                    // Hours Worked Filter
+                    if (hoursWorkedFilter) {
+                        switch (hoursWorkedFilter) {
+                            case '0-10':
+                                show = show && hoursWorked >= 0 && hoursWorked < 10;
+                                break;
+                            case '10-20':
+                                show = show && hoursWorked >= 10 && hoursWorked < 20;
+                                break;
+                            case '20-30':
+                                show = show && hoursWorked >= 20 && hoursWorked < 30;
+                                break;
+                            case '30+':
+                                show = show && hoursWorked >= 30;
+                                break;
+                        }
+                    }
+
+                    // Hourly Rate Filter
+                    if (hourlyRateFilter) {
+                        switch (hourlyRateFilter) {
+                            case '0-50':
+                                show = show && hourlyRate >= 0 && hourlyRate < 50;
+                                break;
+                            case '50-100':
+                                show = show && hourlyRate >= 50 && hourlyRate < 100;
+                                break;
+                            case '100+':
+                                show = show && hourlyRate >= 100;
+                                break;
+                        }
+                    }
+
+                    // Module Code Filter
+                    if (moduleCodeFilter && moduleCode !== moduleCodeFilter) {
+                        show = false;
+                    }
+
+                    // Amount Filter
+                    if (amountFilter) {
+                        switch (amountFilter) {
+                            case '0-500':
+                                show = show && amount >= 0 && amount < 500;
+                                break;
+                            case '500-1000':
+                                show = show && amount >= 500 && amount < 1000;
+                                break;
+                            case '1000+':
+                                show = show && amount >= 1000;
+                                break;
+                        }
+                    }
+
+                    // Toggle row visibility
+                    row.style.display = show ? '' : 'none';
+
+                    // Count visible rows
+                    if (show) visibleRowCount++;
+                });
+
+                // Update filter summary
+                updateFilterSummary(visibleRowCount);
+            }
+
+            // Update Filter Summary Function
+            function updateFilterSummary(visibleCount) {
+                const filterSummary = document.getElementById('filterSummary');
+                const totalRows = document.querySelectorAll('table tbody tr').length;
+
+                filterSummary.textContent = `Showing ${visibleCount} of ${totalRows} claims`;
+            }
+
+            // Reset Filters Function
+            function resetFilters() {
+                // Reset all filter inputs
+                document.getElementById('filterLecturerID').value = '';
+                document.getElementById('filterHoursWorked').value = '';
+                document.getElementById('filterHourlyRate').value = '';
+                document.getElementById('filterModuleCode').value = '';
+                document.getElementById('filterAmount').value = '';
+
+                // Show all rows
+                const rows = document.querySelectorAll('table tbody tr');
+                rows.forEach(row => {
+                    row.style.display = '';
+                });
+
+                // Reset filter summary
+                updateFilterSummary(rows.length);
+            }
+
+            // Initialize on page load
+            document.addEventListener('DOMContentLoaded', function () {
+                // Add event listener to Go button
+                document.getElementById('goFilterButton').addEventListener('click', filterClaims);
+
+                // Initialize filter summary
+                const rows = document.querySelectorAll('table tbody tr').length;
+                updateFilterSummary(rows);
+            });
+
+            //---------------------------------------------------------------------------------------
 
             function showPopup() {
                 const formData = new FormData(document.getElementById('createClaimForm'));
