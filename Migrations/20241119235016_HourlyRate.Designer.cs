@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ST10150702_PROG6212_POE.Data;
 
@@ -10,9 +11,11 @@ using ST10150702_PROG6212_POE.Data;
 namespace ST10150702_PROG6212_POE.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241119235016_HourlyRate")]
+    partial class HourlyRate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,8 +53,8 @@ namespace ST10150702_PROG6212_POE.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("TotalHoursWorked")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("TotalHoursWorked")
+                        .HasColumnType("int");
 
                     b.Property<string>("desc")
                         .IsRequired()
