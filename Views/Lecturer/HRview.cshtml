@@ -12,6 +12,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+
     <style>
         html, body {
             height: 100%;
@@ -285,81 +286,155 @@
     </div>
 
     <script>
+
         // Function to generate and download PDF for a specific claim
+        //---------------------------------------------------------------------------------------
+
         function generateInvoice(claimID) {
-            // Get claim details based on claimID
-            const claim = getClaimDetails(claimID);
+            // Convert claimID to string to ensure correct comparison
+            claimID = claimID.toString();
 
-            // Open a new window to display the claim details
-            var invoiceWindow = window.open('', '_blank');
-            invoiceWindow.document.write('<html><head><title>Invoice for Claim ' + claimID + '</title></head><body>');
-            invoiceWindow.document.write('<h1>Invoice Details for Claim ' + claimID + '</h1>');
-            invoiceWindow.document.write('<p><strong>Lecturer ID:</strong> ' + claim.LecturerID + '</p>');
-            invoiceWindow.document.write('<p><strong>Total Hours Worked:</strong> ' + claim.TotalHoursWorked + '</p>');
-            invoiceWindow.document.write('<p><strong>Hourly Rate:</strong> ' + claim.HourlyRate + '</p>');
-            invoiceWindow.document.write('<p><strong>Amount Due:</strong> ' + claim.AmountDue + '</p>');
-            invoiceWindow.document.write('<p><strong>Module Code:</strong> ' + claim.ModuleCode + '</p>');
-            invoiceWindow.document.write('<p><strong>Description:</strong> ' + claim.Description + '</p>');
-            invoiceWindow.document.write('<p><strong>Status:</strong> ' + claim.Status + '</p>');
+            // Find the table row corresponding to the claimID
+            const row = Array.from(document.querySelectorAll('table tbody tr'))
+                .find(tr => tr.cells[0].textContent.trim() === claimID);
 
-            // Add button for downloading the PDF
-            invoiceWindow.document.write('<button onclick="downloadPDF()">Download PDF</button>');
+            if (!row) {
+                alert('Claim not found');
+                return;
+            }
 
-            // Add the PDF download function to the new window
-            invoiceWindow.downloadPDF = function () {
-                const doc = new jsPDF();
-                doc.text('Invoice Details for Claim ' + claimID, 20, 20);
-                doc.text('Lecturer ID: ' + claim.LecturerID, 20, 30);
-                doc.text('Total Hours Worked: ' + claim.TotalHoursWorked, 20, 40);
-                doc.text('Hourly Rate: ' + claim.HourlyRate, 20, 50);
-                doc.text('Amount Due: ' + claim.AmountDue, 20, 60);
-                doc.text('Module Code: ' + claim.ModuleCode, 20, 70);
-                doc.text('Description: ' + claim.Description, 20, 80);
-                doc.text('Status: ' + claim.Status, 20, 90);
-                doc.save('Invoice_Claim_' + claimID + '.pdf');
+            // Extract data directly from the table row cells
+            const claim = {
+                ClaimID: row.cells[0].textContent.trim(),
+                LecturerID: row.cells[1].textContent.trim(),
+                TotalHoursWorked: row.cells[2].textContent.trim(),
+                HourlyRate: row.cells[3].textContent.trim(),
+                AmountDue: row.cells[4].textContent.trim(),
+                ModuleCode: row.cells[5].textContent.trim(),
+                Description: row.cells[6].textContent.trim(),
+                Status: row.cells[7].textContent.trim()
             };
-        }
 
-        // Function to simulate fetching claim data by claimID
-        function getClaimDetails(claimID) {
-            const claimsData = [
-                { ClaimID: 1, LecturerID: "L001", TotalHoursWorked: 20, HourlyRate: 50, AmountDue: 1000, ModuleCode: "CS101", Description: "Lecture Hours", Status: "Pending" },
-                { ClaimID: 2, LecturerID: "L002", TotalHoursWorked: 15, HourlyRate: 60, AmountDue: 900, ModuleCode: "CS102", Description: "Tutorial Hours", Status: "Approved" },
-                // Add more claims as needed
-            ];
+            // Create popup modal
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
+            modal.style.display = 'flex';
+            modal.style.justifyContent = 'center';
+            modal.style.alignItems = 'center';
+            modal.style.zIndex = '1000';
 
-            return claimsData.find(claim => claim.ClaimID === claimID);
-        }
+            const modalContent = document.createElement('div');
+            modalContent.style.backgroundColor = 'white';
+            modalContent.style.padding = '20px';
+            modalContent.style.borderRadius = '10px';
+            modalContent.style.width = '400px';
+            modalContent.style.maxHeight = '80%';
+            modalContent.style.overflowY = 'auto';
 
-        // Function to dynamically add PDF buttons to the table
-        function addPDFDownloadButtons() {
-            const tableBody = document.querySelector('table tbody');
-            const rows = tableBody.querySelectorAll('tr');
+            // Invoice details
+            modalContent.innerHTML = `
+                <h2>Invoice for Claim ${claim.ClaimID}</h2>
+                <p><strong>Lecturer ID:</strong> ${claim.LecturerID}</p>
+                <p><strong>Total Hours Worked:</strong> ${claim.TotalHoursWorked}</p>
+                <p><strong>Hourly Rate:</strong> ${claim.HourlyRate}</p>
+                <p><strong>Amount Due:</strong> ${claim.AmountDue}</p>
+                <p><strong>Module Code:</strong> ${claim.ModuleCode}</p>
+                <p><strong>Description:</strong> ${claim.Description}</p>
+                <p><strong>Status:</strong> ${claim.Status}</p>
+                <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                    <button id="closeModal" style="padding: 10px; background-color: #6c757d; color: white; border: none; border-radius: 5px;">Close</button>
+                    <button id="downloadPDF" style="padding: 10px; background-color: #007BFF; color: white; border: none; border-radius: 5px;">Download PDF</button>
+                </div>
+            `;
 
-            rows.forEach(row => {
-                const claimID = parseInt(row.cells[0].textContent.trim());  // Assuming ClaimID is in the first column
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
 
-                // Create and append the "Download PDF" button
-                const buttonCell = row.querySelector('.download-btn-cell');
-                if (buttonCell) {
-                    const downloadButton = document.createElement('button');
-                    downloadButton.textContent = 'Download PDF';
-                    downloadButton.onclick = function () {
-                        generateInvoice(claimID);
-                    };
-                    buttonCell.appendChild(downloadButton);
+            // Close modal functionality
+            document.getElementById('closeModal').addEventListener('click', () => {
+                document.body.removeChild(modal);
+            });
+
+            // Download PDF functionality
+            document.getElementById('downloadPDF').addEventListener('click', () => {
+                // Check if jsPDF is available
+                if (typeof jspdf === 'undefined') {
+                    console.error('jsPDF library not loaded');
+                    alert('PDF generation library is not available');
+                    return;
                 }
+
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+
+                // Add title
+                doc.setFontSize(16);
+                doc.text('Claim Invoice', 105, 20, { align: 'center' });
+
+                // Add invoice details
+                doc.setFontSize(12);
+                let yOffset = 40;
+                const labelXOffset = 20;
+                const valueXOffset = 80;
+
+                const details = [
+                    ['Claim ID:', claim.ClaimID],
+                    ['Lecturer ID:', claim.LecturerID],
+                    ['Total Hours Worked:', claim.TotalHoursWorked],
+                    ['Hourly Rate:', claim.HourlyRate],
+                    ['Amount Due:', claim.AmountDue],
+                    ['Module Code:', claim.ModuleCode],
+                    ['Description:', claim.Description],
+                    ['Status:', claim.Status]
+                ];
+
+                details.forEach(([label, value]) => {
+                    doc.text(label, labelXOffset, yOffset);
+                    doc.text(value, valueXOffset, yOffset);
+                    yOffset += 10;
+                });
+
+                // Save the PDF
+                doc.save(`Invoice_Claim_${claim.ClaimID}.pdf`);
             });
         }
 
-        // Call this function when the page loads to add PDF buttons to each row
-        window.onload = function () {
-            addPDFDownloadButtons();
-        };
+        //---------------------------------------------------------------------------------------
 
-        // Filtering
-        //-------------------------------------------------------------------------------------------------
+        // Function to delete a claim
+        //---------------------------------------------------------------------------------------
+        function deleteClaim(claimID) {
+            // Implement delete functionality
+            // This would typically involve an AJAX call to the server
+            if (confirm('Are you sure you want to delete this claim?')) {
+                // Send delete request to server
+                fetch(`/Claims/Delete/${claimID}`, {
+                    method: 'POST'
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            // Remove the row from the table
+                            const row = document.querySelector(`table tbody tr td:first-child:contains('${claimID}')`).closest('tr');
+                            row.remove();
+                        } else {
+                            alert('Failed to delete the claim');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while deleting the claim');
+                    });
+            }
+        }
+        //---------------------------------------------------------------------------------------
 
+        // Filtering Function
+        //---------------------------------------------------------------------------------------
         function filterClaims() {
             // Get all filter values
             const lecturerIDFilter = document.getElementById('filterLecturerID').value.trim();
@@ -457,7 +532,7 @@
             const filterSummary = document.getElementById('filterSummary');
             const totalRows = document.querySelectorAll('table tbody tr').length;
 
-            filterSummary.textContent = Showing ${ visibleCount } of ${ totalRows } claims;
+            filterSummary.textContent = `Showing ${visibleCount} of ${totalRows} claims`;
         }
 
         // Reset Filters Function
@@ -487,11 +562,20 @@
             // Initialize filter summary
             const rows = document.querySelectorAll('table tbody tr').length;
             updateFilterSummary(rows);
-        });
 
+            // Polyfill for :contains selector if not supported
+            jQuery.expr[':'].contains = function (a, i, m) {
+                return jQuery(a).text().toUpperCase()
+                    .indexOf(m[3].toUpperCase()) >= 0;
+            };
+        });
         //---------------------------------------------------------------------------------------
+
     </script>
 
 </body>
 
 </html>
+
+
+      
