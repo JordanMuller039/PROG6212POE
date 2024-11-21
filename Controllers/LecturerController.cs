@@ -43,6 +43,12 @@ namespace ST10150702_PROG6212_POE.Controllers
             return View(claims);
         }
 
+        public IActionResult HRview()
+        {
+            var claims = _context.Claims.ToList();
+            return View(claims);
+        }
+
         [HttpPost]
         public IActionResult CreateClaim()
         {
