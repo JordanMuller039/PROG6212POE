@@ -15,7 +15,7 @@ namespace ST10150702_PROG6212_POE.Data
         {
             modelBuilder.Entity<Claim>()
                 .Property(c => c.AmountDue)
-                .HasPrecision(18, 2); // Example: 18 digits total, 2 after the decimal point
+                .HasPrecision(18, 2); 
         }
 
     }

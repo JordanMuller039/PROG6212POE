@@ -398,8 +398,8 @@
                                 <td>@item.TotalHoursWorked</td>
                                 <td>@item.HourlyRate</td>
                                 <td>@item.AmountDue</td>
-                                <td>@item.ModCode</td>
-                                <td>@item.desc</td>
+                                <td>@item.ModuleCode</td>
+                                <td>@item.Description</td>
                                 <td class="status-column" style="
                                     @if(item.Status == "Approved") {
                                         @:background-color: #4CAF50; color: white;
@@ -454,7 +454,9 @@
         <!-- JAVASCRIPT -->
         <!--------------------------------------------------------------------------------------------------------------------------->
         <script>
+
             // Function to calculate and update Amount Due
+            // ---------------------------------------------------------------------------------------------
             function calculateAmountDue() {
                 var totalHoursWorked = parseFloat(document.getElementById("TotalHoursWorked").value) || 0;
                 var hourlyRate = parseFloat(document.getElementById("HourlyRate").value) || 0;
@@ -468,34 +470,37 @@
             document.getElementById("TotalHoursWorked").addEventListener("input", calculateAmountDue);
             document.getElementById("HourlyRate").addEventListener("input", calculateAmountDue);
 
+            // ---------------------------------------------------------------------------------------------
+
+
+
+            // Function to Submit a new Claim
+            // ---------------------------------------------------------------------------------------------
             $(document).ready(function () {
                 $("#createClaimForm").on("submit", function (event) {
                     event.preventDefault();
 
-                    // Create FormData object from the form
-                    var form = $(this)[0];
-                    var formData = new FormData(form);
+                    // Validate required fields
+                    var lecturerID = $("#LecturerID").val();
+                    var totalHoursWorked = $("#TotalHoursWorked").val();
+                    var hourlyRate = $("#HourlyRate").val();
+                    var moduleCode = $("#ModCode").val();
+                    var description = $("#desc").val();
 
-                    // Convert FormData to JSON object
-                    var jsonData = {};
-                    formData.forEach((value, key) => {
-                        // Convert numeric values
-                        if (key === 'TotalHoursWorked' || key === 'HourlyRate' || key === 'AmountDue') {
-                            jsonData[key] = parseFloat(value);
-                        } else {
-                            jsonData[key] = value;
-                        }
-                    });
-
-                    // Handle file uploads if needed
-                    var fileInput = $("#supportingImages")[0];
-                    if (fileInput.files.length > 0) {
-                        var filesArray = Array.from(fileInput.files);
-                        jsonData.supportingImages = filesArray;
+                    if (!lecturerID || !totalHoursWorked || !hourlyRate || !moduleCode || !description) {
+                        alert("Please fill in all required fields.");
+                        return;
                     }
 
-                    // Log the data being sent (for debugging)
-                    console.log("Sending data:", jsonData);
+                    // Prepare JSON data
+                    var jsonData = {
+                        LecturerID: parseInt(lecturerID),
+                        TotalHoursWorked: parseFloat(totalHoursWorked),
+                        HourlyRate: parseFloat(hourlyRate),
+                        AmountDue: parseFloat($("#AmountDue").val()),
+                        ModuleCode: moduleCode,
+                        Description: description
+                    };
 
                     // Send the AJAX request
                     $.ajax({
@@ -508,17 +513,23 @@
                                 alert("Claim created successfully! Claim ID: " + response.claimId);
                                 location.reload();
                             } else {
-                                alert("Error creating claim: " + response.errors.join(", "));
+                                // Improved error handling
+                                var errorMessage = response.errors ? response.errors.join(", ") : "Unknown error occurred";
+                                alert("Error creating claim: " + errorMessage);
                             }
                         },
                         error: function (xhr, status, error) {
                             console.log("Error details:", xhr.responseText);
-                            alert("An error occurred while submitting the form.");
+                            alert("An error occurred while submitting the form. Please check the console for details.");
                         }
                     });
                 });
             });
 
+            // ---------------------------------------------------------------------------------------------
+
+            // Function to Delete a Claim
+            // ---------------------------------------------------------------------------------------------
             function deleteClaim(claimId) {
                 if (confirm('Are you sure you want to delete this claim?')) {
                     $.ajax({
@@ -535,6 +546,7 @@
                     });
                 }
             }
+            // ---------------------------------------------------------------------------------------------
 
             // Filtering
             //-------------------------------------------------------------------------------------------------

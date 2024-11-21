@@ -319,7 +319,6 @@ C:\Users\Vermo\Documents\ST10150702_PROG6212_POE\bin\Debug\net8.0\System.Memory.
 C:\Users\Vermo\Documents\ST10150702_PROG6212_POE\bin\Debug\net8.0\System.Runtime.Caching.dll
 C:\Users\Vermo\Documents\ST10150702_PROG6212_POE\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\Vermo\Documents\ST10150702_PROG6212_POE\bin\Debug\net8.0\System.Security.Permissions.dll
-C:\Users\Vermo\Documents\ST10150702_PROG6212_POE\bin\Debug\net8.0\System.Text.Json.dll
 C:\Users\Vermo\Documents\ST10150702_PROG6212_POE\bin\Debug\net8.0\System.Windows.Extensions.dll
 C:\Users\Vermo\Documents\ST10150702_PROG6212_POE\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
 C:\Users\Vermo\Documents\ST10150702_PROG6212_POE\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll

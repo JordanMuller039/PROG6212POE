@@ -2,15 +2,19 @@
 using ST10150702_PROG6212_POE.Models;
 using ST10150702_PROG6212_POE.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
+
 namespace ST10150702_PROG6212_POE.Controllers
 {
     public class LecturerController : Controller
     {
         private readonly AppDBContext _context;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public LecturerController(AppDBContext context)
+        public LecturerController(AppDBContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            _hostEnvironment = hostEnvironment;
         }
 
         public async Task<IActionResult> Index()
@@ -25,32 +29,30 @@ namespace ST10150702_PROG6212_POE.Controllers
         }
 
         public IActionResult CreateLogin()
-            { return View(); }
+        {
+            return View();
+        }
 
         public IActionResult Verify()
         {
-            var claims = _context.Claims.ToList(); // Assuming you're using Entity Framework
+            var claims = _context.Claims.ToList();
             if (claims == null || !claims.Any())
             {
-                claims = new List<Claim>(); // Return an empty list instead of null
+                claims = new List<Claim>();
             }
             return View(claims);
         }
 
-
         [HttpPost]
         public IActionResult CreateClaim()
         {
-            var claims = _context.Claims.ToList(); // Fetch claims
+            var claims = _context.Claims.ToList();
             if (claims == null || !claims.Any())
             {
-                claims = new List<Claim>(); // Return an empty list if no claims
+                claims = new List<Claim>();
             }
-
-            return View(claims); // Pass claims to the view
+            return View(claims);
         }
-
-
 
         [HttpPost]
         public async Task<IActionResult> Create(Lecturer lecturer)
@@ -67,19 +69,16 @@ namespace ST10150702_PROG6212_POE.Controllers
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            var claim = _context.Claims.Find(id); // Find the claim by ID
+            var claim = _context.Claims.Find(id);
             if (claim == null)
             {
-                return NotFound(); // Return a 404 if the claim doesn't exist
+                return NotFound();
             }
-
-            _context.Claims.Remove(claim); // Remove the claim
-            _context.SaveChanges(); // Save changes to the database
-
-            return Json(new { success = true }); // Return a success response
+            _context.Claims.Remove(claim);
+            _context.SaveChanges();
+            return Json(new { success = true });
         }
 
-        // Approve claim action with a success message
         public IActionResult Approve(int id)
         {
             var claim = _context.Claims.Find(id);
@@ -89,11 +88,9 @@ namespace ST10150702_PROG6212_POE.Controllers
                 _context.SaveChanges();
                 TempData["Message"] = "Claim approved successfully!";
             }
-
             return RedirectToAction("Verify");
         }
 
-        // Reject claim action with a success message
         public IActionResult Reject(int id)
         {
             var claim = _context.Claims.Find(id);
@@ -103,14 +100,8 @@ namespace ST10150702_PROG6212_POE.Controllers
                 _context.SaveChanges();
                 TempData["Message"] = "Claim rejected successfully!";
             }
-
             return RedirectToAction("Verify");
         }
-
-
-
-
-
 
     }
 }

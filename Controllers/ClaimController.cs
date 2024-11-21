@@ -38,10 +38,26 @@ namespace ST10150702_PROG6212_POE.Controllers
         }
 
 
-                [HttpPost]
-        public async Task<IActionResult> Create(Claim claim, List<IFormFile> supportingImages)
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] Claim claim)
         {
-            if (ModelState.IsValid)
+            // Explicitly validate the model
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState
+                    .Where(x => x.Value.Errors.Count > 0)
+                    .SelectMany(x => x.Value.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                return Json(new
+                {
+                    success = false,
+                    errors = errors
+                });
+            }
+
+            try
             {
                 // Set default status if not provided
                 if (string.IsNullOrWhiteSpace(claim.Status))
@@ -49,55 +65,25 @@ namespace ST10150702_PROG6212_POE.Controllers
                     claim.Status = "Pending"; // Default status
                 }
 
-                // Initialize DocumentPath to null or empty
-                claim.DocumentPath = null;
-
-                // Handle document uploads if there are any
-                if (supportingImages != null && supportingImages.Count > 0)
-                {
-                    var documentPaths = new List<string>();
-
-                    foreach (var file in supportingImages)
-                    {
-                        if (file.Length > 0)
-                        {
-                            var filePath = Path.Combine("uploads", file.FileName); // Adjust path as needed
-                            using (var stream = new FileStream(filePath, FileMode.Create))
-                            {
-                                await file.CopyToAsync(stream);
-                            }
-                            documentPaths.Add(filePath); // Save the path
-                        }
-                    }
-
-                    // Join document paths into a single string if there are any documents
-                    if (documentPaths.Count > 0)
-                    {
-                        claim.DocumentPath = string.Join(",", documentPaths);
-                    }
-                }
-
-                await _context.Claims.AddAsync(claim);
+                // Add the claim to the context
+                _context.Claims.Add(claim);
                 await _context.SaveChangesAsync();
 
-                return Json(new { success = true, claimId = claim.ClaimID });
+                return Json(new
+                {
+                    success = true,
+                    claimId = claim.ClaimID
+                });
             }
-
-            // Log ModelState errors for debugging
-            var errors = ModelState
-                .Where(x => x.Value.Errors.Count > 0)
-                .SelectMany(x => x.Value.Errors)
-                .Select(e => e.ErrorMessage)
-                .ToList();
-
-            // Optionally log errors to console (or your preferred logging mechanism)
-            foreach (var error in errors)
+            catch (Exception ex)
             {
-                Console.WriteLine(error); // Use your logging method here
+                // Log the exception
+                return Json(new
+                {
+                    success = false,
+                    errors = new[] { "An error occurred while creating the claim: " + ex.Message }
+                });
             }
-
-            // Return errors in the response
-            return Json(new { success = false, errors });
         }
 
 
