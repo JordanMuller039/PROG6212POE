@@ -128,23 +128,21 @@
 <body>
     <div class="login-container">
         <h1>
-            <img src="Pictures/VClogo.png" alt=""> Lecturer Login
+            <img src="Pictures/VClogo.png" alt=""> User Login
         </h1>
-        <form method="post" asp-controller="Lecturer" asp-action="CreateClaim">
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["Error"]
+            </div>
+        }
+        <form method="post" asp-controller="Lecturer" asp-action="Login">
             <input type="text" placeholder="Username" name="username" required>
             <input type="password" placeholder="Password" name="password" required>
             <button type="submit">Login!</button>
         </form>
         <div class="signup-link">
             <a asp-controller="Lecturer" asp-action="CreateLogin">Click Here to Sign-up!</a>
-        </div>
-
-        <!-- New section for Program Coordinators and Academic Managers -->
-        <div class="verify-claims-link">
-            Program Coordinators and Academic Managers, <a asp-controller="Lecturer" asp-action="Verify">click here</a> to verify claims.
-        </div>
-        <div class="verify-claims-link">
-            HR, <a asp-controller="Lecturer" asp-action="HRview">click here</a> to go Reports & Invoices.
         </div>
     </div>
 </body>
