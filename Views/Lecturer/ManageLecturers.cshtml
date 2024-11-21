@@ -1,0 +1,252 @@
+﻿@{
+    ViewData["Title"] = "Manage Lecturers";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('Pictures/lecturebackground.jpg');
+            background-size: 350px;
+            background-repeat: repeat;
+        }
+
+            body::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(255, 255, 255, 0.6);
+                z-index: 0;
+            }
+
+        .container {
+            background-color: white;
+            padding: 2.65rem;
+            border-radius: 5px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            width: 80%;
+            max-width: 1000px;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 23px;
+            text-align: center;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+            table th, table td {
+                padding: 12px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            }
+
+        button {
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background-color: #0056b3;
+            }
+
+        /* Modal styles */
+        #editModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+            max-width: 90%;
+        }
+
+        input {
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .modal-content button {
+            margin-top: 10px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Manage Lecturers</h1>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Lecturer ID</th>
+                    <th>Username</th>
+                    <th>Name</th>
+                    <th>Password</th>
+                    <th>Surname</th>
+                    <th>Hourly Rate</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var lecturer in Model)
+                {
+                    <tr>
+                        <td>@lecturer.LectID</td>
+                        <td>@lecturer.UserName</td>
+                        <td>@lecturer.LecName</td>
+                        <td>@lecturer.Password</td>
+                        <td>@lecturer.LecSurname</td>
+                        <td>@lecturer.HourlyRate</td>
+                        <td>
+                            <button class="edit-btn" onclick="openEditModal(@lecturer.LectID, '@lecturer.UserName', '@lecturer.LecName', '@lecturer.Password', '@lecturer.LecSurname', @lecturer.HourlyRate)">Edit</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Popup for Editing Lecturer -->
+    <div id="editModal">
+        <div class="modal-content">
+            <h2>Edit Lecturer</h2>
+            <form id="editLecturerForm">
+                <label for="LectID">Lecturer ID</label>
+                <input type="text" id="LectID" name="LectID" readonly />
+
+                <label for="UserName">Username</label>
+                <input type="text" id="UserName" name="UserName" required />
+
+                <label for="LecName">Name</label>
+                <input type="text" id="LecName" name="LecName" required />
+
+                <label for="Password">Password</label>
+                <input type="password" id="Password" name="Password" required />
+
+                <label for="LecSurname">Surname</label>
+                <input type="text" id="LecSurname" name="LecSurname" required />
+
+                <label for="HourlyRate">Hourly Rate</label>
+                <input type="number" id="HourlyRate" name="HourlyRate" required />
+
+                <button type="button" onclick="saveLecturer()">Save</button>
+                <button type="button" onclick="closeModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Function to open the edit modal and pre-fill the form fields
+        function openEditModal(lectID, userName, lecName, password, lecSurname, hourlyRate) {
+            // Set the values of the form fields
+            document.getElementById("LectID").value = lectID;
+            document.getElementById("UserName").value = userName;
+            document.getElementById("LecName").value = lecName;
+            document.getElementById("Password").value = password;
+            document.getElementById("LecSurname").value = lecSurname;
+            document.getElementById("HourlyRate").value = hourlyRate;
+
+            // Show the modal
+            document.getElementById("editModal").style.display = "flex";
+        }
+
+        // Function to close the modal
+        function closeModal() {
+            document.getElementById("editModal").style.display = "none";
+        }
+
+        // Function to save the edited lecturer details
+        function saveLecturer() {
+            // Get form data
+            const lectID = document.getElementById("LectID").value;
+            const userName = document.getElementById("UserName").value;
+            const lecName = document.getElementById("LecName").value;
+            const password = document.getElementById("Password").value;
+            const lecSurname = document.getElementById("LecSurname").value;
+            const hourlyRate = document.getElementById("HourlyRate").value;
+
+            // Prepare the data to send to the server
+            const lecturerData = {
+                LectID: lectID,
+                UserName: userName,
+                LecName: lecName,
+                Password: password,
+                LecSurname: lecSurname,
+                HourlyRate: hourlyRate
+            };
+
+            // Send data to the server (using fetch or AJAX)
+            fetch(`/Lecturer/UpdateLecturer`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(lecturerData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Lecturer details updated successfully!');
+                        location.reload(); // Refresh the page to reflect changes
+                    } else {
+                        alert('Failed to update lecturer details.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while saving the changes.');
+                });
+
+            // Close the modal after saving
+            closeModal();
+        }
+    </script>
+
+</body>
+</html>
