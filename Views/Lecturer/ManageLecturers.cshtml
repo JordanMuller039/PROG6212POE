@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewData["Title"]</title>
     <style>
+        /* Global styles */
         body, html {
             height: 100%;
             margin: 0;
@@ -17,9 +18,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-image: url('Pictures/lecturebackground.jpg');
+            background-image: url('/Pictures/lecturebackground.jpg');
             background-size: 350px;
             background-repeat: repeat;
+            background-position: center center;
+            background-attachment: fixed;
         }
 
             body::before {
@@ -29,36 +32,38 @@
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background-color: rgba(255, 255, 255, 0.6);
+                background-color: rgba(255, 255, 255, 0.6); 
                 z-index: 0;
             }
 
-        .container {
+        /* Main container for the content */
+        .main-container {
             background-color: white;
-            padding: 2.65rem;
-            border-radius: 5px;
+            padding: 2rem;
+            border-radius: 10px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            width: 80%;
-            max-width: 1000px;
+            width: 100%;
+            max-width: 1200px;
             position: relative;
             z-index: 1;
+            margin-top: 50px;
+            overflow: hidden;
         }
 
         h1 {
             color: #333;
             font-weight: bold;
-            margin-bottom: 23px;
+            margin-bottom: 20px;
             text-align: center;
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 28px;
         }
 
+        /* Table styles */
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            font-size: 16px;
         }
 
             table th, table td {
@@ -67,11 +72,16 @@
                 border-bottom: 1px solid #ddd;
             }
 
+            table th {
+                background-color: #0066cc;
+                color: white;
+            }
+
         button {
             background-color: #0066cc;
             color: white;
             border: none;
-            padding: 10px;
+            padding: 8px 12px;
             border-radius: 4px;
             cursor: pointer;
         }
@@ -100,7 +110,13 @@
             border-radius: 8px;
             width: 400px;
             max-width: 90%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
+
+            .modal-content label {
+                display: block;
+                margin: 10px 0 5px;
+            }
 
         input {
             margin: 10px 0;
@@ -118,7 +134,7 @@
 </head>
 <body>
 
-    <div class="container">
+    <div class="main-container">
         <h1>Manage Lecturers</h1>
 
         <table>
@@ -240,10 +256,10 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('An error occurred while saving the changes.');
+                    alert('An error occurred.');
                 });
 
-            // Close the modal after saving
+            // Close the modal
             closeModal();
         }
     </script>
